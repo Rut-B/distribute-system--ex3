@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Contact Page</title>
+	<link rel="stylesheet" href="home.css" />
+</head>
+<body>
+	<script>
+        function sendEmailContact() {
+            var xhttp;
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log("response: ", this.responseText);
+                }
+            }
+            var name = document.getElementById("name").value;
+            var email = document.getElementById("mail").value;
+            xhttp.open("GET", "/sendEmail?name="+name+"&email="+email, true);
+            xhttp.send();
+        }
+	</script>
+	<div id ="contact">
+		<h1>Contact</h1>
+		<label>Name:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="name">
+		<label>Email:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="email" id="mail">
+		<button onclick="sendEmailContact()">login</button>
+		<div>
+
+		</div>
+	</div>
+	<div id="view_ans">
+		<div id="data_Add_stu" class="input_data">
+			<label>Course:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="course_Add_stu">
+			<label>student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="Student_Add_stu">
+			<label>Grade:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="number" id="Grade_Add_stu">
+		</div>
+		<div id="get_list_by_course" class="input_data">
+			<label>Course:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="course_list">
+		</div>
+		<div id="get_my_grad" class="input_data">
+			<label>Student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_my_grad">
+		</div>
+		<div id="delete" class="input_data">
+			<label>Student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_delete">
+			<label>Course:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="course_delete">
+		</div>
+	</div>
+	<div id="buttoms">
+		<button onclick="addStudentToClass()" class="admin">add Student To Class</button>
+		<button onclick="getListOfCourses()" class="admin">get List Of Courses</button>
+		<button onclick="getListStudentsInCourse()" class="admin">get List Students In Course</button>
+		<button onclick="getMyGrades()" class="admin" id="function_student">get My Grades</button>
+		<button onclick="deleteClassStudent()" class="admin">delete Class Student</button>
+	</div>
+
+
+</body>
+</html>

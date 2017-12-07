@@ -1,0 +1,13 @@
+[
+	{
+	name:"ora",
+	password:"12345",
+	role:"admin"
+	},
+	
+	{
+	name:"tal",
+	password:"12345",
+	role:"student"
+	}
+]

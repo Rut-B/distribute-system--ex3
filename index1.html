@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0047)https://yedion.jce.ac.il/yedion/fireflyweb.aspx -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Contact Page</title>
+</head>
+
+<body>
+    <script>
+        function sendEmailContact() {
+            var xhttp;
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log("response: ", this.responseText);
+                }
+            }
+            var name = document.getElementById("name").value;
+            var email = document.getElementById("mail").value;
+            xhttp.open("GET", "/sendEmail?name="+name+"&email="+email, true);
+            xhttp.send();
+        }
+    </script>
+	<div style="height: 210px;width: 210px;margin: 0 auto;padding: 10px;background: blue; margin-top: 10%;">
+        <h1>Contact</h1>
+		<label>Name:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="name">
+		<label>Email:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="email" id="mail">
+		<button onclick="sendEmailContact()">Send</button>
+	<div>
+
+
+</div></div></body></html>
