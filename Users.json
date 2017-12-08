@@ -1,13 +1,18 @@
 [
 	{
-	name:"ora",
-	password:"12345",
-	role:"admin"
+	"name":"ora",
+	"password":"12345",
+	"role":"admin"
 	},
 	
 	{
-	name:"tal",
-	password:"12345",
-	role:"student"
+	"name":"tal",
+	"password":"12345",
+	"role":"student"
+	},
+	{
+	"name":"avi",
+	"password":"12345",
+	"role":"student"
 	}
 ]

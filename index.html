@@ -1,14 +1,92 @@
 ﻿<!DOCTYPE html>
 
 <html>
+
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Contact Page</title>
-	<link rel="stylesheet" href="home.css" />
+
+
+	<style>
+		body {
+			width: 100vw;
+			height: 100vh;
+		}
+
+		#contact {
+			height: 30%;
+			width: 270px;
+			margin-left: 8%;
+			padding: 10px;
+			background: silver;
+			margin-top: 3%;
+			float: left;
+		}
+
+		.admin {
+			height: 17%;
+			width: 200px;
+			margin-left: 1%;
+			padding: 10px;
+			background: silver;
+			margin-top: 3%;
+			float: unset;
+		}
+
+		#buttoms {
+			height: 43%;
+			width: 210px;
+			margin-left: 8%;
+			padding: 10px;
+			background-color: gainsboro;
+			margin-top: 1%;
+			position: absolute;
+			top: 47%;
+			display: none;
+		}
+
+		#view_ans {
+			height: 85%;
+			width: 600px;
+			margin-left: 8%;
+			padding: 10px;
+			background: silver;
+			margin-top: 3%;
+			display: inline-table;
+		}
+
+		.input_data {
+			margin-left: 2%;
+			margin-top: 2%;
+			background-color: lightgray;
+			height: 30%;
+			width: 40%;
+			padding-left: 3%;
+			padding-top: 2%;
+		}
+
+		#data_Add_stu {
+			display: none;
+		}
+
+		#get_list_by_course {
+			display: none;
+		}
+
+		#get_my_grad {
+			display: none;
+		}
+
+		#delete {
+			display: none;
+		}
+
+
+	</style>
 </head>
 <body>
 	<script>
-        function sendEmailContact() {
+        function sendLoginContact() {
             var xhttp;
             xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
@@ -17,16 +95,17 @@
                 }
             }
             var name = document.getElementById("name").value;
-            var email = document.getElementById("mail").value;
-            xhttp.open("GET", "/sendEmail?name="+name+"&email="+email, true);
+            var password = document.getElementById("password").value;
+            xhttp.open("GET", "/sendLogin?name=" + name + "&password=" + password, true);
             xhttp.send();
         }
 	</script>
 	<div id ="contact">
 		<h1>Contact</h1>
-		<label>Name:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="name">
-		<label>Email:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="email" id="mail">
-		<button onclick="sendEmailContact()">login</button>
+		<label>Name:  </label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="name">
+		<label>password:  </label><input style="margin-top: 8px;margin-bottom: 5px;" type="password" id="password">
+		<br/>
+		<button onclick="sendLoginContact()">login</button>
 		<div>
 
 		</div>
