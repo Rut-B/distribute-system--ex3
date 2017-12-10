@@ -42,8 +42,10 @@
 			margin-top: 1%;
 			position: absolute;
 			top: 47%;
-			//display: none;
-			display: block;
+		}
+
+		.admin {
+			display: none;
 		}
 
 		#view_ans {
@@ -67,10 +69,14 @@
 		}
 
 		#data_Add_stu {
-			display: inline;
+			display: none;
 		}
 
 		#get_list_by_course {
+			display: none;
+		}
+
+		#get_list_by_student {
 			display: none;
 		}
 
@@ -87,20 +93,70 @@
 </head>
 <body>
 	<script>
+		var funcName="";
         function sendLoginContact() {
             var xhttp;
             xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    console.log("response: ", this.responseText);
+					console.log("response: ", this.responseText);
+					if(this.responseText == "admin") {
+						var testElements = document.getElementsByClassName('admin');
+						for(var i=0; i<testElements.length; i++) {
+							testElements[i].style.display = "block";
+						}
+					}
                 }
             }
             var name = document.getElementById("name").value;
             var password = document.getElementById("password").value;
             xhttp.open("GET", "/sendLogin?name=" + name + "&password=" + password, true);
             xhttp.send();
-        }
+		}
+		function addStudentToClassInput() {
+			hideElements();
+			document.getElementById("data_Add_stu").style.display = "block";
+			funcName = "addStudentToClass";
+		}
+		function getListOfCoursesInput() {
+			hideElements();
+			document.getElementById("get_list_by_course").style.display = "block";
+			funcName = "getListOfCourses";
+		}
+		function getListStudentsInCourseInput() {
+			hideElements();
+			document.getElementById("get_list_by_student").style.display = "block";
+			funcName = "getListStudentsInCourse";
+		}
+		function getMyGradesInput() {
+			hideElements();
+			document.getElementById("get_my_grad").style.display = "block";
+			funcName ="getMyGrades";
+		}
+		function deleteClassStudentInput() {
+			hideElements();
+			document.getElementById("delete").style.display = "block";
+			funcName = "deleteClassStudent";
+		}
+		function hideElements() {
+			document.getElementById("data_Add_stu").style.display = "none";
+			document.getElementById("get_list_by_course").style.display = "none";
+			document.getElementById("get_list_by_student").style.display = "none";
+			document.getElementById("get_my_grad").style.display = "none";
+			document.getElementById("delete").style.display = "none";
+		}
+		function submit() {
+			switch(funcName) {
+				case "deleteClassStudent" : deleteClassStudent(); break;
+				case "getMyGrades" : getMyGrades(); break;
+				case "getListStudentsInCourse": getListStudentsInCourse();break;
+				case "getListOfCourses" : getListOfCourses();break;
+				case "addStudentToClass": addStudentToClass();break;
+			}
+			hideElements();
+		}
 		function addStudentToClass() {
+			console.log('add');
             var xhttp;
             xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
@@ -134,6 +190,9 @@
 		<div id="get_list_by_course" class="input_data">
 			<label>Course:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="course_list">
 		</div>
+		<div id="get_list_by_student" class="input_data">
+			<label>Student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_list">
+		</div>
 		<div id="get_my_grad" class="input_data">
 			<label>Student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_my_grad">
 		</div>
@@ -141,13 +200,14 @@
 			<label>Student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_delete">
 			<label>Course:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="course_delete">
 		</div>
+		<button class="admin" onclick="submit()">submit</button>
 	</div>
-	<div id="buttoms">
-		<button onclick="addStudentToClass()" class="admin">add Student To Class</button>
-		<button onclick="getListOfCourses()" class="admin">get List Of Courses</button>
-		<button onclick="getListStudentsInCourse()" class="admin">get List Students In Course</button>
-		<button onclick="getMyGrades()" class="admin" id="function_student">get My Grades</button>
-		<button onclick="deleteClassStudent()" class="admin">delete Class Student</button>
+	<div id="buttoms" class="admin">
+		<button onclick="addStudentToClassInput()" class="admin">add Student To Class</button>
+		<button onclick="getListOfCoursesInput()" class="admin">get List Of Courses</button>
+		<button onclick="getListStudentsInCourseInput()" class="admin">get List Students In Course</button>
+		<button onclick="getMyGradesInput()" class="admin" id="function_student">get My Grades</button>
+		<button onclick="deleteClassStudentInput()" class="admin">delete Class Student</button>
 	</div>
 
 
