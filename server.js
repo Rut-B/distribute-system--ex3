@@ -30,8 +30,13 @@ fs.readFile('index.html', function(err, data) {
  console.log("written file");
 }); */
 
- }
- 
+ } else if (url_path == "/addStudentToClass") {
+	 var qdata = q.query;
+	 var course = qdata.course;
+	 var student = qdata.student;
+	 var grade = qdata.grade;
+	 var rule = addStudentToClass(course, student, grade); 
+	 }
 }).listen(8080);
 
 //server.use(express.static());
@@ -67,6 +72,7 @@ function Login(name, pswd) {
 	
 	let rawdata = fs.readFileSync('Users.json');
 	let student = JSON.parse(rawdata);
+	console.log(student);
 	student.forEach(function (obj) {		
 		if ((obj.name == name) && (obj.password == pswd)) {		
 			console.log(obj.role);
@@ -76,10 +82,25 @@ function Login(name, pswd) {
 	});
 	return null;
 }
-/*
-addStudentToClass(string Course,  string Student, int Grade){
-	
+
+function addStudentToClass(course, student, grade){
+	console.log('hi shira c:'+course +' s:'+student+' g:'+grade);
+	let flag = 0;
+	let rawdata = fs.readFileSync('Courses.json');
+	let courses = JSON.parse(rawdata);
+	console.log(courses);
+	courses.forEach(function (obj) {		
+		if (obj.name == course) {		
+			console.log('course exists');
+			flag = 1;
+		}
+	});
+	if (!flag) {
+		console.log('course not exists.. need to create...');
+	}
+	return "hi";
 }
+/*
 getListOfCourses(){
 	
 }

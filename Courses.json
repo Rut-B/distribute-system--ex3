@@ -1,4 +1,8 @@
 [
-{name:"distabute system"},
-{name:"infi"}
+	{
+		"name":"distabute_system"
+	},
+	{
+		"name":"infi"
+	}
 ]

@@ -42,7 +42,8 @@
 			margin-top: 1%;
 			position: absolute;
 			top: 47%;
-			display: none;
+			//display: none;
+			display: block;
 		}
 
 		#view_ans {
@@ -66,7 +67,7 @@
 		}
 
 		#data_Add_stu {
-			display: none;
+			display: inline;
 		}
 
 		#get_list_by_course {
@@ -97,6 +98,20 @@
             var name = document.getElementById("name").value;
             var password = document.getElementById("password").value;
             xhttp.open("GET", "/sendLogin?name=" + name + "&password=" + password, true);
+            xhttp.send();
+        }
+		function addStudentToClass() {
+            var xhttp;
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log("response: ", this.responseText);
+                }
+            }
+            var course = document.getElementById("course_Add_stu").value;
+            var student = document.getElementById("Student_Add_stu").value;
+			var grade = document.getElementById("Grade_Add_stu").value;
+            xhttp.open("GET", "/addStudentToClass?course=" + course + "&student=" + student + "&grade=" + grade, true);
             xhttp.send();
         }
 	</script>
