@@ -71,8 +71,11 @@
 		#data_Add_stu {
 			display: none;
 		}
+		#submit {
+		display:none;
+		}
 
-		#get_list_by_course {
+		#get_list_courses {
 			display: none;
 		}
 
@@ -87,41 +90,52 @@
 		#delete {
 			display: none;
 		}
-
-
 	</style>
 </head>
 <body>
 	<script>
-		var funcName="";
-        function sendLoginContact() {
-            var xhttp;
-            xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
+		var funcName = "";
+		//----------------------------
+		function sendLoginContact() {
+			var xhttp;
+			xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
 					console.log("response: ", this.responseText);
-					if(this.responseText == "admin") {
+					hideElements();
+					document.getElementById("submit").style.display = "none";
+					if (this.responseText == "admin") {
 						var testElements = document.getElementsByClassName('admin');
-						for(var i=0; i<testElements.length; i++) {
+						for (var i = 0; i < testElements.length; i++) {
 							testElements[i].style.display = "block";
-						}
+						} document.getElementById("submit").style.display = "none";
+
 					}
-                }
-            }
-            var name = document.getElementById("name").value;
-            var password = document.getElementById("password").value;
-            xhttp.open("GET", "/sendLogin?name=" + name + "&password=" + password, true);
-            xhttp.send();
+					else
+						if (this.responseText == "student") {
+							document.getElementById("function_student").style.display = "block";
+						}
+				}
+			}
+			var name = document.getElementById("name").value;
+			var password = document.getElementById("password").value;
+			xhttp.open("GET", "/sendLogin?name=" + name + "&password=" + password, true);
+			xhttp.send();
 		}
+		//-------------------------------------
+
 		function addStudentToClassInput() {
 			hideElements();
 			document.getElementById("data_Add_stu").style.display = "block";
+			document.getElementById("submit").style.display = "block";
 			funcName = "addStudentToClass";
 		}
+		//----------------------------------
 		function getListOfCoursesInput() {
 			hideElements();
-			document.getElementById("get_list_by_course").style.display = "block";
-			funcName = "getListOfCourses";
+			document.getElementById("get_list_courses").style.display = "block";
+			getListOfCourses();
+			//funcName = "getListOfCourses";
 		}
 		function getListStudentsInCourseInput() {
 			hideElements();
@@ -131,7 +145,7 @@
 		function getMyGradesInput() {
 			hideElements();
 			document.getElementById("get_my_grad").style.display = "block";
-			funcName ="getMyGrades";
+			funcName = "getMyGrades";
 		}
 		function deleteClassStudentInput() {
 			hideElements();
@@ -140,42 +154,62 @@
 		}
 		function hideElements() {
 			document.getElementById("data_Add_stu").style.display = "none";
-			document.getElementById("get_list_by_course").style.display = "none";
+			document.getElementById("get_list_courses").style.display = "none";
 			document.getElementById("get_list_by_student").style.display = "none";
 			document.getElementById("get_my_grad").style.display = "none";
 			document.getElementById("delete").style.display = "none";
+			
 		}
 		function submit() {
-			switch(funcName) {
-				case "deleteClassStudent" : deleteClassStudent(); break;
-				case "getMyGrades" : getMyGrades(); break;
-				case "getListStudentsInCourse": getListStudentsInCourse();break;
-				case "getListOfCourses" : getListOfCourses();break;
-				case "addStudentToClass": addStudentToClass();break;
+			switch (funcName) {
+				case "deleteClassStudent": deleteClassStudent(); break;
+				case "getMyGrades": getMyGrades(); break;
+				case "getListStudentsInCourse": getListStudentsInCourse(); break;
+				case "getListOfCourses": getListOfCourses(); break;
+				case "addStudentToClass": addStudentToClass(); break;
 			}
 			hideElements();
+			document.getElementById("submit").style.display = "none";
 		}
+		//-----------------------------
 		function addStudentToClass() {
+			document.getElementById("submit").style.display = "none";
 			console.log('add');
-            var xhttp;
-            xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    console.log("response: ", this.responseText);
-                }
-            }
-            var course = document.getElementById("course_Add_stu").value;
-            var student = document.getElementById("Student_Add_stu").value;
+			var xhttp;
+			xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					console.log("response: ", this.responseText);
+				}
+			}
+			var course = document.getElementById("course_Add_stu").value;
+			var student = document.getElementById("Student_Add_stu").value;
 			var grade = document.getElementById("Grade_Add_stu").value;
-            xhttp.open("GET", "/addStudentToClass?course=" + course + "&student=" + student + "&grade=" + grade, true);
-            xhttp.send();
-        }
+			xhttp.open("GET", "/addStudentToClass?course=" + course + "&student=" + student + "&grade=" + grade, true);
+			xhttp.send();
+		}
+		//------------------------------------
+		function getListOfCourses() {
+			document.getElementById("submit").style.display = "none";
+			var xhttp;
+			xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					console.log("response: ", this.responseXML);
+					document.getElementById("view_ans").innerHTML = this.responseBody;
+				}
+			}
+			
+			xhttp.open("GET", "/course_list", true);
+			xhttp.send();
+		}
+		//------------------------------
 	</script>
-	<div id ="contact">
+	<div id="contact">
 		<h1>Contact</h1>
 		<label>Name:  </label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="name">
 		<label>password:  </label><input style="margin-top: 8px;margin-bottom: 5px;" type="password" id="password">
-		<br/>
+		<br />
 		<button onclick="sendLoginContact()">login</button>
 		<div>
 
@@ -187,8 +221,8 @@
 			<label>student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="Student_Add_stu">
 			<label>Grade:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="number" id="Grade_Add_stu">
 		</div>
-		<div id="get_list_by_course" class="input_data">
-			<label>Course:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="course_list">
+		<div id="get_list_courses" class="input_data">
+			
 		</div>
 		<div id="get_list_by_student" class="input_data">
 			<label>Student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_list">
@@ -200,7 +234,7 @@
 			<label>Student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_delete">
 			<label>Course:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="course_delete">
 		</div>
-		<button class="admin" onclick="submit()">submit</button>
+		<button class="admin" onclick="submit()" id="submit">submit</button>
 	</div>
 	<div id="buttoms" class="admin">
 		<button onclick="addStudentToClassInput()" class="admin">add Student To Class</button>
