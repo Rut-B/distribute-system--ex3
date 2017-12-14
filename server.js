@@ -25,7 +25,8 @@ var server= http.createServer(function (req, res) {
 		var rule = Login(name, password);
 		console.log("rule");
 		console.log(rule);
-		res.end(rule);
+		res.write(rule);
+		res.end();
 	}
 	else if (url_path == "/addStudentToClass") {
 		var qdata = q.query;
@@ -33,47 +34,31 @@ var server= http.createServer(function (req, res) {
 		var student = qdata.student;
 		var grade = qdata.grade;
 		var add = addStudentToClass(course, student, grade);
-		res.end(add);
+		res.writeHead(200, {'Content-Type': 'text/html'});
+		res.write(add);
+		res.end();
 	}
 	else
 		if (url_path == "/course_list") {
-			var list = getListOfCourses(res);
-			console.log(list);
-			res.end(list);
+			var list = getListOfCourses();
+			res.writeHead(200, { 'Content-Type': 'application/json' });
+			res.write(JSON.stringify(list));
+			res.end();
 		}
+		else
+			if (url_path == "/list_stu_in_course") {
+				var qdata = q.query;
+				var course = qdata.course;
+				var list_stu = getListStudentsInCourse(course);
+				res.writeHead(200, { 'Content-Type': 'application/json' });
+				res.write(JSON.stringify(list_stu));
+				res.end();
+			}
 
 
 }).listen(8080);
 
-//server.use(express.static());
-/*
 
-var http = require('http');
-var url = require('url');
-var fs = require('fs');
-
-http.createServer(function (req, res) {
-
-
-
-fs.readFile('index.html', function(err, data) {
- res.writeHead(200, {'Content-Type': 'text/html'});
- res.write(data);
- res.end();
-});
-
- var q = url.parse(req.url, true);
- var url_path = q.pathname;
-
- if(url_path=="/sendEmail"){
-
- console.log("written file");
-
- }
-
-}).listen(8080);
-
-*/
 
 //*******************************
 function Login(name, pswd) {
@@ -123,11 +108,13 @@ function addStudentToClass(course, student, grade) {
 		console.log('course not exists.. need to create...');
 		var data = {"name" : course};
 		courses.push(data);
+		courses = courses.sort(predicateBy("name"));
 		fs.writeFileSync('Courses.json', JSON.stringify(courses));
 
 		var current_course=[];
 		var data = {"student" : student, "grade" : grade};
 		current_course.push(data);
+		current_course = current_course.sort(predicateBy("name"));
 		fs.writeFileSync(course+'.json', JSON.stringify(current_course));
 	}
 
@@ -150,22 +137,22 @@ function addStudentToClass(course, student, grade) {
 		{
 			var data = {"student" : student, "grade" : grade};
 			current_course.push(data);
+			current_course = current_course.sort(predicateBy("name"));
 			fs.writeFileSync(course+'.json', JSON.stringify(current_course));
 		}
 	}
+	return "add...";
 
 }
 
-
+//****************************************
 function getListOfCourses(res){
 	let rawdata = fs.readFileSync('Courses.json');
 	let courses = JSON.parse(rawdata);
 
 	console.log(courses);
-	var list = courses.sort(predicateBy("name"));
-	console.log(list);
-	res.end(""+list);
-
+	var list = courses;//courses.sort(predicateBy("name"));
+	return list;
 }
 
 function predicateBy(prop) {
@@ -178,11 +165,26 @@ function predicateBy(prop) {
 		return 0;
 	}
 }
-/*
-getListStudentsInCourse(string Course){
 
+function getListStudentsInCourse(course) {
+	var flag_course = 0;
+	let rawdata = fs.readFileSync('Courses.json');
+	let courses = JSON.parse(rawdata);
+	courses.forEach(function (obj) {
+		if ((obj.name == course)) {
+			flag_course = 1;	
+		}
+
+	});
+	if (flag_course) {
+		let rawdata = fs.readFileSync(course + '.json');
+		let student_list = JSON.parse(rawdata);
+		return student_list;
+	}
+	else
+		return null;
 }
-
+/*
 getMyGrades(string Student){
 
 }

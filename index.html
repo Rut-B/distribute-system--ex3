@@ -48,7 +48,7 @@
 			display: none;
 		}
 
-		#view_ans {
+		#input_view {
 			height: 85%;
 			width: 600px;
 			margin-left: 8%;
@@ -139,6 +139,7 @@
 		}
 		function getListStudentsInCourseInput() {
 			hideElements();
+			document.getElementById("submit").style.display = "block";
 			document.getElementById("get_list_by_student").style.display = "block";
 			funcName = "getListStudentsInCourse";
 		}
@@ -153,12 +154,13 @@
 			funcName = "deleteClassStudent";
 		}
 		function hideElements() {
+			
 			document.getElementById("data_Add_stu").style.display = "none";
 			document.getElementById("get_list_courses").style.display = "none";
 			document.getElementById("get_list_by_student").style.display = "none";
 			document.getElementById("get_my_grad").style.display = "none";
 			document.getElementById("delete").style.display = "none";
-			
+		
 		}
 		function submit() {
 			switch (funcName) {
@@ -170,6 +172,7 @@
 			}
 			hideElements();
 			document.getElementById("submit").style.display = "none";
+			
 		}
 		//-----------------------------
 		function addStudentToClass() {
@@ -195,14 +198,48 @@
 			xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function () {
 				if (this.readyState == 4 && this.status == 200) {
-					console.log("response: ", this.responseXML);
-					document.getElementById("view_ans").innerHTML = this.responseBody;
+					console.log("response: ", this.responseText);
+					var obj = JSON.parse(this.responseText);
+					var res = "";
+					for (var i = 0; i < obj.length; i++)
+						res += "course name : " + obj[i].name + "<br/>";
+					document.getElementById("ans_server_list").innerHTML = res;
 				}
 			}
 			
 			xhttp.open("GET", "/course_list", true);
 			xhttp.send();
 		}
+		//----------------------------
+		function getListStudentsInCourse() {
+
+			console.log('--');
+			
+
+			document.getElementById("ans_stu_list").style.display = "block";
+			document.getElementById("ans_stu_list").innerHTML = "---**********--";
+			var xhttp;
+			xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					if (this.responseText != null) {
+						console.log("response: ", this.responseText);
+						var obj = JSON.parse(this.responseText);
+						var res = "";
+						for (var i = 0; i < obj.length; i++)
+							res += "student name : " + obj[i].student +"  grade: "+obj[i].grade+  "<br/>";
+						document.getElementById("ans_stu_list").innerHTML = res;
+					}
+					else
+						alert("Course not exist");
+				}
+			}
+			var course = document.getElementById("student_list").value;
+			xhttp.open("GET", "/list_stu_in_course?course=" + course, true);
+			xhttp.send();
+		}
+
+
 		//------------------------------
 	</script>
 	<div id="contact">
@@ -215,18 +252,24 @@
 
 		</div>
 	</div>
-	<div id="view_ans">
+	<div id="input_view">
+		
 		<div id="data_Add_stu" class="input_data">
 			<label>Course:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="course_Add_stu">
 			<label>student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="Student_Add_stu">
 			<label>Grade:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="number" id="Grade_Add_stu">
 		</div>
 		<div id="get_list_courses" class="input_data">
+			<div id="ans_server_list"></div>
+		</div>
+		
+			<div id="get_list_by_student" class="input_data">
+				<label>Course:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_list">
+				<div id="ans_stu_list">-----</div>
+			</div>
 			
-		</div>
-		<div id="get_list_by_student" class="input_data">
-			<label>Student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_list">
-		</div>
+
+		
 		<div id="get_my_grad" class="input_data">
 			<label>Student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_my_grad">
 		</div>
@@ -243,7 +286,7 @@
 		<button onclick="getMyGradesInput()" class="admin" id="function_student">get My Grades</button>
 		<button onclick="deleteClassStudentInput()" class="admin">delete Class Student</button>
 	</div>
-
+	
 
 </body>
 </html>
