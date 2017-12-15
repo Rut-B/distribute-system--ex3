@@ -54,6 +54,15 @@ var server= http.createServer(function (req, res) {
 				res.write(JSON.stringify(list_stu));
 				res.end();
 			}
+			else
+				if (url_path == "/getMyGrades") {
+					var qdata = q.query;
+					var name = qdata.name;
+					var list_courses = getMyGrades(name);
+					res.writeHead(200, { 'Content-Type': 'application/json' });
+					res.write(JSON.stringify(list_courses));
+					res.end();
+				}
 
 
 }).listen(8080);
@@ -85,14 +94,11 @@ function Login(name, pswd) {
 //*********************************
 
 function addStudentToClass(course, student, grade) {
-
-	console.log('hi shira c:'+course +' s:'+student+' g:'+grade);
-
 	let exist_course = 0;
 	let exist_std=0;
 	let rawdata = fs.readFileSync('Courses.json');
 	let courses = JSON.parse(rawdata);
-	console.log(courses);
+
 
 	//check if course exist
 	courses.forEach(function (obj) {
@@ -141,6 +147,41 @@ function addStudentToClass(course, student, grade) {
 			fs.writeFileSync(course+'.json', JSON.stringify(current_course));
 		}
 	}
+
+
+	//add to student this course:
+	exist_course = 0;
+	
+	if (fs.existsSync(student + '.json')) {
+		console.log("exist student");
+		//check if this course exist;
+		let rawdata = fs.readFileSync(student + '.json');
+		let courses = JSON.parse(rawdata);
+		courses.forEach(function (obj) {
+			if (obj.name == course) {
+				console.log('course exists');//if the course is exist
+				exist_course = 1;
+			}
+		});
+
+		if (!exist_course) {
+
+			//add course to courses list
+			console.log('course not exists.. need to add...');
+			var data = { "course": course ,"grade":grade};
+			courses.push(data);
+			courses = courses.sort(predicateBy("name"));
+			fs.writeFileSync(student+'.json', JSON.stringify(courses));
+			
+		}
+	}
+	else {//create student file
+		var current_course = [];
+		var data = { "course": course, "grade": grade };
+		current_course.push(data);
+		current_course = current_course.sort(predicateBy("name"));
+		fs.writeFileSync(student + '.json', JSON.stringify(current_course));
+	}
 	return "add...";
 
 }
@@ -184,12 +225,21 @@ function getListStudentsInCourse(course) {
 	else
 		return null;
 }
-/*
-getMyGrades(string Student){
 
+function getMyGrades(student){
+
+	if (fs.existsSync(student + '.json')) {
+		let rawdata = fs.readFileSync(student + '.json');
+		let student_list = JSON.parse(rawdata);
+		return student_list;
+	}
+	else {
+		console.log("ERROR");
+		return null;
+	}
 }
 
-
+/*
 deleteClassStudent(string class,  string student){
 
 }
