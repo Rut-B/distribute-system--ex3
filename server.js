@@ -8,7 +8,7 @@ var express = require('express');
 var server= http.createServer(function (req, res) {
 
 	var q = url.parse(req.url, true);
-	var url_path = q.pathname; 
+	var url_path = q.pathname;
 
 	if(url_path == '/') {
 		fs.readFile('index.html', function(err, data) {
@@ -16,160 +16,237 @@ var server= http.createServer(function (req, res) {
 			res.write(data);
 			res.end();
 		});
-	} else if (url_path == "/sendLogin") {
+	}
+
+	else if (url_path == "/sendLogin") {
 		var qdata = q.query;
 		var name =qdata.name;
 		var password = qdata.password;
 		var rule = Login(name, password);
 		console.log("rule");
 		console.log(rule);
-		res.end(rule);
-	} else if (url_path == "/addStudentToClass") {
+		res.write(rule);
+		res.end();
+	}
+	else if (url_path == "/addStudentToClass") {
 		var qdata = q.query;
 		var course = qdata.course;
 		var student = qdata.student;
 		var grade = qdata.grade;
-		var add = addStudentToClass(course, student, grade); 
-		res.end(add);
+		var add = addStudentToClass(course, student, grade);
+		res.writeHead(200, {'Content-Type': 'text/html'});
+		res.write(add);
+		res.end();
+	} else if (url_path == "/deleteClassStudent") {
+		var qdata = q.query;
+		var course = qdata.course;
+		var student = qdata.student;
+		console.log('in delete@');
+		var delete_message = deleteClassStudent(course, student);
+		console.log(delete_message);
+		res.writeHead(200, {'Content-Type': 'text/html'});
+		res.write(delete_message);
+		res.end();
 	}
-
-
-
-
-
-
-/* var q = url.parse(req.url, true);
- var url_path = q.pathname;
- 
- if (url_path == "/sendLogin") {
-	 var qdata = q.query;
-	 var name =qdata.name;
-	 var password = qdata.password;
-	 var rule = Login(name, password);
-
-	 console.log(rule);
-/*
-	 let rawdata = fs.readFileSync('Users.json');
-	 let student = JSON.parse(rawdata);
-	 console.log(student[0].name);
-	 fs.writeFile('student.txt', name+ ","+password,function(err){
- console.log("written file");
-}); */
-/*
- } else if (url_path == "/addStudentToClass") {
-	 var qdata = q.query;
-	 var course = qdata.course;
-	 var student = qdata.student;
-	 var grade = qdata.grade;
-	 var rule = addStudentToClass(course, student, grade); 
-	 }*/
-}).listen(8080);
-
-//server.use(express.static());
-/*
-
-var http = require('http');
-var url = require('url');
-var fs = require('fs');
-
-http.createServer(function (req, res) {
-	
-	
-	
-fs.readFile('index.html', function(err, data) {
- res.writeHead(200, {'Content-Type': 'text/html'});
- res.write(data);
- res.end();
-});
-
- var q = url.parse(req.url, true);
- var url_path = q.pathname;
- 
- if(url_path=="/sendEmail"){
-
- console.log("written file");
-
- }
+	else
+		if (url_path == "/course_list") {
+			var list = getListOfCourses();
+			res.writeHead(200, {'Content-Type': 'application/json'});
+			res.write(JSON.stringify(list));
+			res.end();
+		}
+		else
+			if (url_path == "/list_stu_in_course") {
+				var qdata = q.query;
+				var course = qdata.course;
+				var list_stu = getListStudentsInCourse(course);
+				res.writeHead(200, { 'Content-Type': 'application/json' });
+				res.write(JSON.stringify(list_stu));
+				res.end();
+			}
 
 }).listen(8080);
 
-*/
+
+
+//*******************************
 function Login(name, pswd) {
-	
+
 	let rawdata = fs.readFileSync('Users.json');
 	let student = JSON.parse(rawdata);
-	console.log(student);
+
 	var rule = "none";
-	student.forEach(function (obj) {		
-		if ((obj.name == name) && (obj.password == pswd)) {		
-			//console.log(obj.role);
+	student.forEach(function (obj) {
+		if ((obj.name == name) && (obj.password == pswd)) {
 			if (obj.role == "admin") {
 				rule= "admin";
-			} else {
+			}
+			else if (obj.role == "student") {
 				rule = "student";
 			}
 		}
-		
+
 	});
 	return rule;
 }
 
-function addStudentToClass(course, student, grade){
+
+//*********************************
+
+function addStudentToClass(course, student, grade) {
+
 	console.log('hi shira c:'+course +' s:'+student+' g:'+grade);
-	let flag = 0;
+
+	let exist_course = 0;
+	let exist_std=0;
 	let rawdata = fs.readFileSync('Courses.json');
 	let courses = JSON.parse(rawdata);
 	console.log(courses);
-	courses.forEach(function (obj) {		
-		if (obj.name == course) {		
-			console.log('course exists');
-			flag = 1;
-			//add student and his grade to specipic json course
-			let course_data = fs.readFileSync(course+'.json');
-			let current_course = JSON.parse(course_data);
-			var data = {"student" : student, "grade" : grade};
-			current_course.push(data);
-			fs.writeFileSync(course+'.json', JSON.stringify(current_course));
+
+	//check if course exist
+	courses.forEach(function (obj) {
+		if (obj.name == course) {
+			console.log('course exists');//if the course is exist
+			exist_course = 1;
 		}
 	});
-	if (!flag) {
+
+	if(!exist_course) {
+
 		//add course to courses list
 		console.log('course not exists.. need to create...');
 		var data = {"name" : course};
 		courses.push(data);
+		courses = courses.sort(predicateBy("name"));
 		fs.writeFileSync('Courses.json', JSON.stringify(courses));
-		//add student and his grade to specipic json course
-		let course_data = fs.readFileSync(course+'.json');
-		let current_course = JSON.parse(course_data);
+
+		var current_course=[];
 		var data = {"student" : student, "grade" : grade};
 		current_course.push(data);
+		current_course = current_course.sort(predicateBy("name"));
 		fs.writeFileSync(course+'.json', JSON.stringify(current_course));
 	}
-	/*
-	var jsonfile = require('jsonfile');
-for (i = 0; i < 11 ; i++) {
-jsonfile.writeFile('loop.json', "id :" + i + " square :" + i * i);
+
+	if(exist_course)//check if student exist;
+	{
+		console.log("exist course just add std");
+		let course_data = fs.readFileSync(course+'.json');//read student of this course
+		let current_course = JSON.parse(course_data);
+		
+		current_course.forEach(function(name_std) {
+			if(name_std.student == student)
+			{
+				exist_std = 1;
+				
+			}
+		});
+
+		//add student and his grade to specipic json course
+		if(!exist_std)
+		{
+			var data = {"student" : student, "grade" : grade};
+			current_course.push(data);
+			current_course = current_course.sort(predicateBy("name"));
+			fs.writeFileSync(course+'.json', JSON.stringify(current_course));
+		}
+	}
+	return "add...";
+
 }
-	*/
-	return "hi";
+
+//****************************************
+function getListOfCourses(res){
+	let rawdata = fs.readFileSync('Courses.json');
+	let courses = JSON.parse(rawdata);
+
+	console.log(courses);
+	var list = courses;//courses.sort(predicateBy("name"));
+	//res.write(list);
+	//console.log(list);
+	//let lists ="jjj";
+	//res.end(lists);
+	return list;
+}
+
+function predicateBy(prop) {
+	return function (a, b) {
+		if (a[prop] > b[prop]) {
+			return 1;
+		} else if (a[prop] < b[prop]) {
+			return -1;
+		}
+		return 0;
+	}
+}
+
+function getListStudentsInCourse(course) {
+	var flag_course = 0;
+	let rawdata = fs.readFileSync('Courses.json');
+	let courses = JSON.parse(rawdata);
+	courses.forEach(function (obj) {
+		if ((obj.name == course)) {
+			flag_course = 1;	
+		}
+
+	});
+	if (flag_course) {
+		let rawdata = fs.readFileSync(course + '.json');
+		let student_list = JSON.parse(rawdata);
+		return student_list;
+	}
+	else
+		return null;
+}
+
+function deleteClassStudent(course, student) {
+	var flag_course = 0;
+	var flag_student = 0;
+	var messgae = "";
+	let rawdata = fs.readFileSync('Courses.json');
+	let courses = JSON.parse(rawdata);
+	courses.forEach(function (obj) {
+		if ((obj.name == course)) {
+			flag_course = 1;	
+		}
+
+	});
+	if (!flag_course) {
+		messgae = "course not exist";
+	} else {
+		let rawdata = fs.readFileSync(course+'.json');
+		let course_list = JSON.parse(rawdata);
+		if(student == "None" || student == "") {//delete all students
+			course_list.forEach(function (obj) {
+				course_list.pop(obj);
+			});
+			console.log("delete all students");
+			messgae = "delete all students";
+		} else {
+			course_list.forEach(function (obj) {
+				if ((obj.student == student)) {
+					course_list.pop(obj);
+					flag_student = 1;
+				}
+				if (!flag_course) {
+					console.log("student not exist in this courses");
+					messgae = "student not exist in this course";
+				} else {
+					console.log("delete the student");
+					messgae = "delete the student";
+				}
+			});
+		}
+		fs.writeFileSync(course+'.json', JSON.stringify(course_list));
+	}
+	return messgae;
 }
 /*
-getListOfCourses(){
-	
-}
-
-getListStudentsInCourse(string Course){
-	
-}
-
 getMyGrades(string Student){
-	
+
 }
 
 
-deleteClassStudent(string class,  string student){
-	
-}
+
 
 
 
@@ -189,4 +266,3 @@ deleteClassStudent(string class,  string student){
 */
 
 
- 
