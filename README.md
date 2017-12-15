@@ -2,7 +2,7 @@
 
 hi shira :)
 
-hi shira :)
+(▀̿Ĺ̯▀̿ ̿) ( ͡ᵔ ͜ʖ ͡ᵔ ) (ʘ‿ʘ)
 
 <div dir="rtl">
   
