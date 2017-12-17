@@ -80,6 +80,9 @@
 		#data_Add_stu {
 			display: none;
 		}
+		#submit {
+		display:none;
+		}
 
 		#submit {
 			display: none;
@@ -114,7 +117,6 @@
 			xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function () {
 				if (this.readyState == 4 && this.status == 200) {
-
 					console.log("response: ", this.responseText);
 					hideElements();
 					document.getElementById("submit").style.display = "none";
@@ -182,7 +184,6 @@
 			funcName = "deleteClassStudent";
 		}
 		function hideElements() {
-
 			document.getElementById("data_Add_stu").style.display = "none";
 			document.getElementById("get_list_courses").style.display = "none";
 			document.getElementById("get_list_by_student").style.display = "none";
@@ -201,7 +202,23 @@
 			}
 			hideElements();
 			document.getElementById("submit").style.display = "none";
-
+		}
+		//--------------------------
+		function deleteClassStudent() {
+			document.getElementById("submit").style.display = "none";
+			console.log('delete');
+			var xhttp;
+			xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					console.log("response: ", this.responseText);
+					alert(this.responseText);
+				}
+			}
+			var course = document.getElementById("course_delete").value;
+			var student = document.getElementById("student_delete").value;
+			xhttp.open("GET", "/deleteClassStudent?course=" + course + "&student=" + student, true);
+			xhttp.send();
 		}
 		//-----------------------------
 		function addStudentToClass() {
@@ -241,7 +258,6 @@
 		}
 		//----------------------------
 		function getListStudentsInCourse() {
-
 			var xhttp;
 			xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function () {
@@ -312,7 +328,6 @@
 		</div>
 	</div>
 	<div id="input_view">
-
 		<div id="data_Add_stu" class="input_data">
 			<label>Course:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="course_Add_stu">
 			<label>student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="Student_Add_stu">

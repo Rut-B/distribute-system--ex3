@@ -37,25 +37,32 @@ var server= http.createServer(function (req, res) {
 		res.writeHead(200, {'Content-Type': 'text/html'});
 		res.write(add);
 		res.end();
+
+	} else if (url_path == "/deleteClassStudent") {
+		var qdata = q.query;
+		var course = qdata.course;
+		var student = qdata.student;
+		var delete_message = deleteClassStudent(course, student);
+		console.log(delete_message);
+		res.writeHead(200, {'Content-Type': 'text/html'});
+		res.write(delete_message);
+		res.end();
 	}
 	else
 		if (url_path == "/course_list") {
 			var list = getListOfCourses();
-			res.writeHead(200, { 'Content-Type': 'application/json' });
+			res.writeHead(200, {'Content-Type': 'application/json'});
 			res.write(JSON.stringify(list));
 			res.end();
 		}
-		else
-			if (url_path == "/list_stu_in_course") {
+		else if (url_path == "/list_stu_in_course") {
 				var qdata = q.query;
 				var course = qdata.course;
 				var list_stu = getListStudentsInCourse(course);
 				res.writeHead(200, { 'Content-Type': 'application/json' });
 				res.write(JSON.stringify(list_stu));
 				res.end();
-			}
-			else
-				if (url_path == "/getMyGrades") {
+		} else if (url_path == "/getMyGrades") {
 					var qdata = q.query;
 					var name = qdata.name;
 					var list_courses = getMyGrades(name);
@@ -63,8 +70,6 @@ var server= http.createServer(function (req, res) {
 					res.write(JSON.stringify(list_courses));
 					res.end();
 				}
-
-
 }).listen(8080);
 
 
@@ -98,8 +103,6 @@ function addStudentToClass(course, student, grade) {
 	let exist_std=0;
 	let rawdata = fs.readFileSync('Courses.json');
 	let courses = JSON.parse(rawdata);
-
-
 	//check if course exist
 	courses.forEach(function (obj) {
 		if (obj.name == course) {
@@ -239,26 +242,45 @@ function getMyGrades(student){
 	}
 }
 
-/*
-deleteClassStudent(string class,  string student){
+function deleteClassStudent(course, student) {
+	var flag_course = 0;
+	var flag_student = 0;
+	var messgae = "";
+	let rawdata = fs.readFileSync('Courses.json');
+	let courses = JSON.parse(rawdata);
+	courses.forEach(function (obj) {
+		if ((obj.name == course)) {
+			flag_course = 1;	
+		}
 
+	});
+	if (!flag_course) {
+		messgae = "course not exist";
+	} else {
+		let rawdata = fs.readFileSync(course+'.json');
+		let course_list = JSON.parse(rawdata);
+		if(student == "None" || student == "") {//delete all students
+			course_list.forEach(function (obj) {
+				course_list.pop(obj);
+			});
+			console.log("delete all students");
+			messgae = "delete all students";
+		} else {
+			course_list.forEach(function (obj) {
+				if (obj.student == student) {
+					course_list.pop(obj);
+					flag_student = 1;
+				}
+			});
+			if (!flag_student) {
+				console.log("student not exist in this courses");
+				messgae = "student not exist in this course";
+			} else {
+				console.log("delete the student");
+				messgae = "delete the student";
+			}
+		}
+		fs.writeFileSync(course+'.json', JSON.stringify(course_list));
+	}
+	return messgae;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*/
-
-
