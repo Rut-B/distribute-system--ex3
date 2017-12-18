@@ -134,11 +134,11 @@ function addStudentToClass(course, student, grade) {
 		let course_data = fs.readFileSync(course+'.json');//read student of this course
 		let current_course = JSON.parse(course_data);
 		
-		current_course.forEach(function(name_std) {
-			if(name_std.student == student)
+		current_course.forEach(function(stu) {
+			if (stu.student == student)//student exist just update his grade.
 			{
 				exist_std = 1;
-				
+				stu.grade = grade;
 			}
 		});
 
@@ -150,6 +150,7 @@ function addStudentToClass(course, student, grade) {
 			current_course = current_course.sort(predicateBy("name"));
 			fs.writeFileSync(course+'.json', JSON.stringify(current_course));
 		}
+		
 	}
 
 
@@ -165,6 +166,7 @@ function addStudentToClass(course, student, grade) {
 		courses.forEach(function (obj) {
 			if (obj.course == course) {
 				console.log('course exists');//if the course is exist
+				obj.grade = grade;
 				exist_course = 1;
 			}
 		});
@@ -278,7 +280,17 @@ function deleteClassStudent(course, student) {
 				console.log("student not exist in this courses");
 				messgae = "student not exist in this course";
 			} else {
-				console.log("delete the student");
+				console.log("delete the student");//delete course from student.
+				let rawdata = fs.readFileSync(student + '.json');
+				let course_list = JSON.parse(rawdata);
+				courses.forEach(function (obj) {
+					if ((obj.course == course)) {
+						course_list.pop(obj);
+					}
+
+
+				});
+				fs.writeFileSync(student + '.json', JSON.stringify(course_list));
 				messgae = "delete the student";
 			}
 		}

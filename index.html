@@ -135,10 +135,12 @@
 								testElements[i].style.display = "none";
 							}
 
-							
+
 							document.getElementById("buttoms").style.display = "block";
-								document.getElementById("function_student").style.display = "block";
-							}
+							document.getElementById("function_student").style.display = "block";
+						}
+						else
+							alert("ERROR! the user not valid...please make sure that name and password is correct.");
 						}
 				}
 				var name = document.getElementById("name").value;
@@ -181,6 +183,7 @@
 		function deleteClassStudentInput() {
 			hideElements();
 			document.getElementById("delete").style.display = "block";
+			document.getElementById("submit").style.display = "block";
 			funcName = "deleteClassStudent";
 		}
 		function hideElements() {
@@ -307,7 +310,7 @@
 
 					}
 					else
-						alert("ERORR -GET_MY_COURSE");
+						alert("ERORR -there is problem in thi name..");
 				}
 			}
 			var name = document.getElementById("student_my_grad").value;
