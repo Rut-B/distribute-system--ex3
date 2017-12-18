@@ -282,15 +282,13 @@ function deleteClassStudent(course, student) {
 			} else {
 				console.log("delete the student");//delete course from student.
 				let rawdata = fs.readFileSync(student + '.json');
-				let course_list = JSON.parse(rawdata);
-				courses.forEach(function (obj) {
+				let student_list = JSON.parse(rawdata);
+				student_list.forEach(function (obj) {
 					if ((obj.course == course)) {
-						course_list.pop(obj);
+						student_list.pop(obj);
 					}
-
-
 				});
-				fs.writeFileSync(student + '.json', JSON.stringify(course_list));
+				fs.writeFileSync(student + '.json', JSON.stringify(student_list));
 				messgae = "delete the student";
 			}
 		}

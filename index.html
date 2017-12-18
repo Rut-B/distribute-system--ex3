@@ -1,6 +1,4 @@
-﻿<!DOCTYPE html>
-
-<html>
+﻿<html>
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -12,8 +10,7 @@
 			width: 100vw;
 			height: 100vh;
 		}
-
-		#login {
+		#contact {
 			height: 30%;
 			width: 270px;
 			margin-left: 8%;
@@ -22,7 +19,6 @@
 			margin-top: 3%;
 			float: left;
 		}
-
 		.admin {
 			height: 17%;
 			width: 200px;
@@ -33,7 +29,6 @@
 			float: unset;
 			display: none;
 		}
-
 		#buttoms {
 			height: 43%;
 			width: 210px;
@@ -44,7 +39,6 @@
 			position: absolute;
 			top: 47%;
 		}
-
 		.admin_t {
 			height: 17%;
 			width: 200px;
@@ -55,7 +49,6 @@
 			float: unset;
 			display: none;
 		}
-
 		#input_view {
 			height: 85%;
 			width: 600px;
@@ -65,7 +58,6 @@
 			margin-top: 3%;
 			display: inline-table;
 		}
-
 		.input_data {
 			margin-left: 2%;
 			margin-top: 2%;
@@ -76,30 +68,24 @@
 			padding-top: 2%;
 			
 		}
-
 		#data_Add_stu {
 			display: none;
 		}
 		#submit {
 		display:none;
 		}
-
 		#submit {
 			display: none;
 		}
-
 		#get_list_courses {
 			display: none;
 		}
-
 		#get_list_by_student {
 			display: none;
 		}
-
 		#get_my_grad {
 			display: none;
 		}
-
 		#delete {
 			display: none;
 		}
@@ -112,7 +98,7 @@
 	<script>
 		var funcName = "";
 		//----------------------------
-		function sendLogin() {
+		function sendLoginContact() {
 			var xhttp;
 			xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function () {
@@ -125,16 +111,14 @@
 						for (var i = 0; i < testElements.length; i++) {
 							testElements[i].style.display = "block";
 						} document.getElementById("submit").style.display = "none";
-
 					}
 					else
 						if (this.responseText == "student") {
+							alert("this is student");
 							var testElements = document.getElementsByClassName('admin');
 							for (var i = 0; i < testElements.length; i++) {
 								testElements[i].style.display = "none";
 							}
-
-
 							document.getElementById("buttoms").style.display = "block";
 							document.getElementById("function_student").style.display = "block";
 						}
@@ -147,11 +131,8 @@
 				xhttp.open("GET", "/sendLogin?name=" + name + "&password=" + password, true);
 				xhttp.send();
 			}
-
 		
-
 		//-------------------------------------
-
 		function addStudentToClassInput() {
 			hideElements();
 			document.getElementById("data_Add_stu").style.display = "block";
@@ -254,7 +235,6 @@
 					document.getElementById("ans_server_list").innerHTML = res;
 				}
 			}
-
 			xhttp.open("GET", "/course_list", true);
 			xhttp.send();
 		}
@@ -270,7 +250,6 @@
 						var res = "";
 						for (var i = 0; i < obj.length; i++)
 							res += "student name : " + obj[i].student + "  ,   grade: " + obj[i].grade+"." + "<br/>";
-
 						document.getElementById("get_list_by_student").style.display = "block";
 						document.getElementById("test").style.display = "none";
 						document.getElementById("ans_stu_list").innerHTML = res;
@@ -286,10 +265,8 @@
 			xhttp.open("GET", "/list_stu_in_course?course=" + course, true);
 			xhttp.send();
 		}
-
 		//-------------------------------------
 		function getMyGrades() {
-
 			var xhttp;
 			xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function () {
@@ -300,13 +277,10 @@
 						var res = "";
 						for (var i = 0; i < obj.length; i++)
 							res += "course name : " + obj[i].course + "  ,   grade: " + obj[i].grade + "." + "<br/>";
-
 						document.getElementById("get_my_grad").style.display = "block";
 						document.getElementById("input_my_grade").style.display = "none";
 						document.getElementById("ans_my_grads").innerHTML = res;
 						document.getElementById("ans_my_grads").style.display = "block";
-
-
 					}
 					else
 						alert("ERORR -there is problem in thi name..");
@@ -316,15 +290,14 @@
 			xhttp.open("GET", "/getMyGrades?name=" + name, true);
 			xhttp.send();
 		}
-
 		//------------------------------
 	</script>
-	<div id="login">
-		<h1>Login</h1>
+	<div id="contact">
+		<h1>Contact</h1>
 		<label>Name:  </label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="name">
 		<label>password:  </label><input style="margin-top: 8px;margin-bottom: 5px;" type="password" id="password">
 		<br />
-		<button onclick="sendLogin()">login</button>
+		<button onclick="sendLoginContact()">login</button>
 		<div>
 
 		</div>
