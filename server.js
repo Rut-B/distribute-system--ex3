@@ -23,8 +23,6 @@ var server= http.createServer(function (req, res) {
 		var name =qdata.name;
 		var password = qdata.password;
 		var rule = Login(name, password);
-		console.log("rule");
-		console.log(rule);	
 		res.write(rule);
 		res.end();
 	}
@@ -43,7 +41,6 @@ var server= http.createServer(function (req, res) {
 		var course = qdata.course;
 		var student = qdata.student;
 		var delete_message = deleteClassStudent(course, student);
-		console.log(delete_message);
 		res.writeHead(200, {'Content-Type': 'text/html'});
 		res.write(delete_message);
 		res.end();
@@ -100,55 +97,53 @@ function Login(name, pswd) {
 
 function addStudentToClass(course, student, grade) {
 	let exist_course = 0;
-	let exist_std=0;
+	let exist_std = 0;
 	let rawdata = fs.readFileSync('Courses.json');
 	let courses = JSON.parse(rawdata);
 	//check if course exist
-	
+
 	courses.forEach(function (obj) {
 		if (obj.name == course) {
-			console.log('course exists');//if the course is exist
+//if the course is exist
 			exist_course = 1;
 		}
 	});
 
-	if(!exist_course) {
+	if (!exist_course) {
 
 		//add course to courses list
 		console.log('course not exists.. need to create...');
-		var data = {"name" : course};
+		var data = { "name": course };
 		courses.push(data);
-		courses = courses.sort(predicateBy("name"));		
+		courses = courses.sort(predicateBy("name"));
 		fs.writeFileSync('Courses.json', JSON.stringify(courses));
 
-		var current_course=[];
-		var data = {"student" : student, "grade" : grade};
+		var current_course = [];
+		var data = { "student": student, "grade": grade };
 		current_course.push(data);
-		fs.writeFileSync(course+'.json', JSON.stringify(current_course));
+		fs.writeFileSync(course + '.json', JSON.stringify(current_course));
 	}
 
-	if(exist_course)//check if student exist;
+	if (exist_course)//check if student exist;
 	{
 		console.log("exist course just add std");
-		let course_data = fs.readFileSync(course+'.json');//read student of this course
+		let course_data = fs.readFileSync(course + '.json');//read student of this course
 		let current_course = JSON.parse(course_data);
-		
-		current_course.forEach(function(name_std) {
-			if(name_std.student == student)
+
+		current_course.forEach(function (stu) {
+			if (stu.student == student)//student exist just update his grade.
 			{
 				exist_std = 1;
-				
+				stu.grade = grade;
 			}
 		});
-		
+
 		//add student and his grade to specipic json course
-		if(!exist_std)
-		{
-			var data = {"student" : student, "grade" : grade};
+		if (!exist_std) {
+			var data = { "student": student, "grade": grade };
 			current_course.push(data);
 			current_course = current_course.sort(predicateBy("student"));
-			console.log(current_course);
-			fs.writeFileSync(course+'.json', JSON.stringify(current_course));
+			fs.writeFileSync(course + '.json', JSON.stringify(current_course));
 		}
 		else
 			fs.writeFileSync(course + '.json', JSON.stringify(current_course));
@@ -157,16 +152,15 @@ function addStudentToClass(course, student, grade) {
 
 	//add to student this course:
 	exist_course = 0;
-	
+
 	if (fs.existsSync(student + '.json')) {
-		console.log("exist student");
+
 		//check if this course exist;
 		let rawdata = fs.readFileSync(student + '.json');
 		let courses = JSON.parse(rawdata);
+
 		courses.forEach(function (obj) {
-			if (obj.name == course) {
-				console.log('course exists');//if the course is exist
-				console.log("the grade is" + obj.grade);
+			if (obj.course == course) {
 				obj.grade = grade;
 				fs.writeFileSync(student + '.json', JSON.stringify(courses));
 				exist_course = 1;
@@ -177,11 +171,11 @@ function addStudentToClass(course, student, grade) {
 
 			//add course to courses list
 			console.log('course not exists.. need to add...');
-			var data = { "course": course ,"grade":grade};
+			var data = { "course": course, "grade": grade };
 			courses.push(data);
 			courses = courses.sort(predicateBy("course"));
-			fs.writeFileSync(student+'.json', JSON.stringify(courses));
-			
+			fs.writeFileSync(student + '.json', JSON.stringify(courses));
+
 		}
 	}
 	else {//create student file
@@ -194,6 +188,7 @@ function addStudentToClass(course, student, grade) {
 	return "add...";
 
 }
+
 
 //****************************************
 function getListOfCourses(res){
@@ -268,7 +263,29 @@ function deleteClassStudent(course, student) {
 		if(student == "None" || student == "") {//delete all students
 			console.log("delete all students");
 			messgae = "delete all students";
+
+			for (var i = 0; i < course_list.length; i++) {
+				student = course_list[i].student;
+				//delete from all student files the course:
+				let rawdata = fs.readFileSync(student + '.json');
+				let course_list_std = JSON.parse(rawdata);
+				let new_course_list_std = [];
+				course_list_std.forEach(function (obj) {
+					if ((obj.course != course)) {
+						new_course_list_std.push(obj);
+					}
+				});
+
+				new_course_list_std = new_course_list_std.sort(predicateBy("name"));
+				fs.writeFileSync(student + '.json', JSON.stringify(new_course_list_std));
+			}
+
+
 			fs.writeFileSync(course + '.json', JSON.stringify(new_course_list));
+
+
+
+
 		}
 		else {
 			    course_list.forEach(function (obj) {
