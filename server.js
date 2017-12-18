@@ -254,7 +254,7 @@ function deleteClassStudent(course, student) {
 	let rawdata = fs.readFileSync('Courses.json');
 	let courses = JSON.parse(rawdata);
 	courses.forEach(function (obj) {
-		if ((obj.name == course)) {
+		if ((obj.name == course)) {//check if course exist
 			flag_course = 1;	
 		}
 
@@ -276,8 +276,11 @@ function deleteClassStudent(course, student) {
 		else {
 			course_list.forEach(function (obj) {
 				if (obj.student == student) {
+					console.log("befor"+course_list);
 					course_list.pop(obj);
+					console.log("after"+course_list);
 					flag_student = 1;
+					
 				}
 			});
 			if (!flag_student) {
@@ -287,6 +290,7 @@ function deleteClassStudent(course, student) {
 
 			else {
 				console.log("delete the student");//delete course from student.
+				fs.writeFileSync(course + '.json', JSON.stringify(course_list));
 				let rawdata = fs.readFileSync(student + '.json');
 				let course_list_std = JSON.parse(rawdata);
 				courses.forEach(function (obj) {
@@ -296,6 +300,7 @@ function deleteClassStudent(course, student) {
 
 
 				});
+				console.log("course_list_std" + course_list_std);
 				fs.writeFileSync(student + '.json', JSON.stringify(course_list_std));
 				messgae = "delete the student";
 			}
