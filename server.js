@@ -133,11 +133,11 @@ function addStudentToClass(course, student, grade) {
 		let course_data = fs.readFileSync(course+'.json');//read student of this course
 		let current_course = JSON.parse(course_data);
 		
-		current_course.forEach(function(stu) {
-			if (stu.student == student)//student exist just update his grade.
+		current_course.forEach(function(name_std) {
+			if(name_std.student == student)
 			{
 				exist_std = 1;
-				stu.grade = grade;
+				
 			}
 		});
 		
@@ -163,9 +163,8 @@ function addStudentToClass(course, student, grade) {
 		//check if this course exist;
 		let rawdata = fs.readFileSync(student + '.json');
 		let courses = JSON.parse(rawdata);
-		console.log(courses);
 		courses.forEach(function (obj) {
-			if (obj.course == course) {
+			if (obj.name == course) {
 				console.log('course exists');//if the course is exist
 				console.log("the grade is" + obj.grade);
 				obj.grade = grade;
@@ -265,6 +264,7 @@ function deleteClassStudent(course, student) {
 	else {
 		let rawdata = fs.readFileSync(course+'.json');
 		let course_list = JSON.parse(rawdata);
+		let new_course_list=[];
 		if(student == "None" || student == "") {//delete all students
 			course_list.forEach(function (obj) {
 				course_list.pop(obj);
@@ -276,13 +276,13 @@ function deleteClassStudent(course, student) {
 		else {
 			course_list.forEach(function (obj) {
 				if (obj.student == student) {
-					console.log("befor"+course_list);
-					course_list.pop(obj);
-					console.log("after"+course_list);
 					flag_student = 1;
-					
+				} else {
+					new_course_list.push(obj);
 				}
 			});
+			new_course_list = new_course_list.sort(predicateBy("student"));
+			fs.writeFileSync(course + '.json', JSON.stringify(new_course_list));
 			if (!flag_student) {
 				console.log("student not exist in this courses");
 				messgae = "student not exist in this course";
@@ -293,19 +293,18 @@ function deleteClassStudent(course, student) {
 				fs.writeFileSync(course + '.json', JSON.stringify(course_list));
 				let rawdata = fs.readFileSync(student + '.json');
 				let course_list_std = JSON.parse(rawdata);
-				courses.forEach(function (obj) {
-					if ((obj.course == course)) {
-						course_list_std.pop(obj);
+				let new_course_list_std = [];
+				course_list_std.forEach(function (obj) {
+					if ((obj.course != course)) {
+						new_course_list_std.push(obj);
 					}
-
-
 				});
-				console.log("course_list_std" + course_list_std);
-				fs.writeFileSync(student + '.json', JSON.stringify(course_list_std));
+
+				new_course_list_std = new_course_list_std.sort(predicateBy("name"));
+				fs.writeFileSync(student + '.json', JSON.stringify(new_course_list_std));
 				messgae = "delete the student";
 			}
 		}
-		
 	}
 	return messgae;
 }
