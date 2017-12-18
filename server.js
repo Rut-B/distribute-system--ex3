@@ -104,6 +104,7 @@ function addStudentToClass(course, student, grade) {
 	let rawdata = fs.readFileSync('Courses.json');
 	let courses = JSON.parse(rawdata);
 	//check if course exist
+	console.log(courses);
 	courses.forEach(function (obj) {
 		if (obj.name == course) {
 			console.log('course exists');//if the course is exist
@@ -160,8 +161,9 @@ function addStudentToClass(course, student, grade) {
 		//check if this course exist;
 		let rawdata = fs.readFileSync(student + '.json');
 		let courses = JSON.parse(rawdata);
+		console.log(courses);
 		courses.forEach(function (obj) {
-			if (obj.name == course) {
+			if (obj.course == course) {
 				console.log('course exists');//if the course is exist
 				exist_course = 1;
 			}
