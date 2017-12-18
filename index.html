@@ -11,12 +11,12 @@
 			height: 100vh;
 		}
 		#contact {
-			height: 30%;
+			height: 35%;
 			width: 270px;
-			margin-left: 8%;
+			margin-left: 38%;
 			padding: 10px;
 			background: silver;
-			margin-top: 3%;
+			margin-top: 13%;
 			float: left;
 		}
 		.admin {
@@ -32,12 +32,12 @@
 		#buttoms {
 			height: 43%;
 			width: 210px;
-			margin-left: 8%;
+			margin-right: 8%;
 			padding: 10px;
 			background-color: gainsboro;
-			margin-top: 1%;
+			margin-top: 3%;
 			position: absolute;
-			top: 47%;
+			
 		}
 		.admin_t {
 			height: 17%;
@@ -50,20 +50,21 @@
 			display: none;
 		}
 		#input_view {
-			height: 85%;
-			width: 600px;
-			margin-left: 8%;
+			display:none;
+			height: 85vh;
+			width: 35vw;
+			margin-left:25%;
 			padding: 10px;
 			background: silver;
 			margin-top: 3%;
-			display: inline-table;
+			float:left;
 		}
 		.input_data {
 			margin-left: 2%;
 			margin-top: 2%;
 			background-color: lightgray;
-			height: 30%;
-			width: 40%;
+			height: 40vh;
+			width: 20vw;
 			padding-left: 3%;
 			padding-top: 2%;
 			
@@ -74,9 +75,7 @@
 		#submit {
 		display:none;
 		}
-		#submit {
-			display: none;
-		}
+		
 		#get_list_courses {
 			display: none;
 		}
@@ -98,6 +97,7 @@
 	<script>
 		var funcName = "";
 		//----------------------------
+
 		function sendLoginContact() {
 			var xhttp;
 			xhttp = new XMLHttpRequest();
@@ -107,20 +107,24 @@
 					hideElements();
 					document.getElementById("submit").style.display = "none";
 					if (this.responseText == "admin") {
+						document.getElementById("input_view").style.display = "block";
 						var testElements = document.getElementsByClassName('admin');
 						for (var i = 0; i < testElements.length; i++) {
 							testElements[i].style.display = "block";
 						} document.getElementById("submit").style.display = "none";
+						document.getElementById("contact").style.display = "none";
+						
 					}
 					else
 						if (this.responseText == "student") {
-							
+							document.getElementById("input_view").style.display = "block";
 							var testElements = document.getElementsByClassName('admin');
 							for (var i = 0; i < testElements.length; i++) {
 								testElements[i].style.display = "none";
 							}
 							document.getElementById("buttoms").style.display = "block";
 							document.getElementById("function_student").style.display = "block";
+							document.getElementById("contact").style.display = "none";
 						}
 						else
 							alert("ERROR! the user not valid...please make sure that name and password is correct.");
@@ -309,10 +313,18 @@
 		<label>Name:  </label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="name">
 		<label>password:  </label><input style="margin-top: 8px;margin-bottom: 5px;" type="password" id="password">
 		<br />
-		<button onclick="sendLoginContact()">login</button>
+		<button onclick="sendLoginContact()" id="login">login</button>
 		<div>
 
 		</div>
+	</div>
+
+	<div id="buttoms" class="admin">
+		<button onclick="addStudentToClassInput()" class="admin">add Student To Class</button>
+		<button onclick="getListOfCoursesInput()" class="admin">get List Of Courses</button>
+		<button onclick="getListStudentsInCourseInput()" class="admin">get List Students In Course</button>
+		<button onclick="getMyGradesInput()" class="admin" id="function_student">get My Grades</button>
+		<button onclick="deleteClassStudentInput()" class="admin">delete Class Student</button>
 	</div>
 	<div id="input_view">
 		<div id="data_Add_stu" class="input_data">
@@ -336,8 +348,8 @@
 				<label>Student:</label>
 				<input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_my_grad">
 			</div>
-				<div id="ans_my_grads"></div>
-			
+			<div id="ans_my_grads"></div>
+
 		</div>
 		<div id="delete" class="input_data">
 			<label>Student:</label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="student_delete">
@@ -345,14 +357,6 @@
 		</div>
 		<button class="admin" onclick="submit()" id="submit">submit</button>
 	</div>
-	<div id="buttoms" class="admin">
-		<button onclick="addStudentToClassInput()" class="admin">add Student To Class</button>
-		<button onclick="getListOfCoursesInput()" class="admin">get List Of Courses</button>
-		<button onclick="getListStudentsInCourseInput()" class="admin">get List Students In Course</button>
-		<button onclick="getMyGradesInput()" class="admin" id="function_student">get My Grades</button>
-		<button onclick="deleteClassStudentInput()" class="admin">delete Class Student</button>
-	</div>
-
 
 </body>
 </html>

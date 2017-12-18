@@ -24,7 +24,7 @@ var server= http.createServer(function (req, res) {
 		var password = qdata.password;
 		var rule = Login(name, password);
 		console.log("rule");
-		console.log(rule);
+		console.log(rule);	
 		res.write(rule);
 		res.end();
 	}
@@ -266,15 +266,12 @@ function deleteClassStudent(course, student) {
 		let course_list = JSON.parse(rawdata);
 		let new_course_list=[];
 		if(student == "None" || student == "") {//delete all students
-			course_list.forEach(function (obj) {
-				course_list.pop(obj);
-			});
 			console.log("delete all students");
 			messgae = "delete all students";
-			fs.writeFileSync(course + '.json', JSON.stringify(course_list));
+			fs.writeFileSync(course + '.json', JSON.stringify(new_course_list));
 		}
 		else {
-			course_list.forEach(function (obj) {
+			    course_list.forEach(function (obj) {
 				if (obj.student == student) {
 					flag_student = 1;
 				} else {
@@ -290,7 +287,7 @@ function deleteClassStudent(course, student) {
 
 			else {
 				console.log("delete the student");//delete course from student.
-				fs.writeFileSync(course + '.json', JSON.stringify(course_list));
+				
 				let rawdata = fs.readFileSync(student + '.json');
 				let course_list_std = JSON.parse(rawdata);
 				let new_course_list_std = [];
