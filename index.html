@@ -13,7 +13,7 @@
 			height: 100vh;
 		}
 
-		#contact {
+		#login {
 			height: 30%;
 			width: 270px;
 			margin-left: 8%;
@@ -112,7 +112,7 @@
 	<script>
 		var funcName = "";
 		//----------------------------
-		function sendLoginContact() {
+		function sendLogin() {
 			var xhttp;
 			xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function () {
@@ -129,7 +129,6 @@
 					}
 					else
 						if (this.responseText == "student") {
-							alert("this is student");
 							var testElements = document.getElementsByClassName('admin');
 							for (var i = 0; i < testElements.length; i++) {
 								testElements[i].style.display = "none";
@@ -317,12 +316,12 @@
 
 		//------------------------------
 	</script>
-	<div id="contact">
-		<h1>Contact</h1>
+	<div id="login">
+		<h1>Login</h1>
 		<label>Name:  </label><input style="margin-top: 8px;margin-bottom: 8px;" type="text" id="name">
 		<label>password:  </label><input style="margin-top: 8px;margin-bottom: 5px;" type="password" id="password">
 		<br />
-		<button onclick="sendLoginContact()">login</button>
+		<button onclick="sendLogin()">login</button>
 		<div>
 
 		</div>
