@@ -129,7 +129,7 @@
 					}
 					else
 						if (this.responseText == "student") {
-							alert("this is student");
+							
 							var testElements = document.getElementsByClassName('admin');
 							for (var i = 0; i < testElements.length; i++) {
 								testElements[i].style.display = "none";
@@ -262,40 +262,46 @@
 		//----------------------------
 		function getListStudentsInCourse() {
 			var xhttp;
+			
 			xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function () {
 				if (this.readyState == 4 && this.status == 200) {
-					if (this.responseText != null) {
+					
+					if (this.responseText != "null") {					
 						console.log("response: ", this.responseText);
 						var obj = JSON.parse(this.responseText);
 						var res = "";
 						for (var i = 0; i < obj.length; i++)
-							res += "student name : " + obj[i].student + "  ,   grade: " + obj[i].grade+"." + "<br/>";
+							res += "student name : " + obj[i].student + "  ,   grade: " + obj[i].grade + "." + "<br/>";
 
 						document.getElementById("get_list_by_student").style.display = "block";
 						document.getElementById("test").style.display = "none";
 						document.getElementById("ans_stu_list").innerHTML = res;
 						document.getElementById("ans_stu_list").style.display = "block";
-						
+
+
+					}
+					else {
+						alert("Course not exist");
 						
 					}
-					else
-						alert("Course not exist");
+						
 				}
 			}
 			var course = document.getElementById("student_list").value;
 			xhttp.open("GET", "/list_stu_in_course?course=" + course, true);
 			xhttp.send();
+			
 		}
 
 		//-------------------------------------
 		function getMyGrades() {
-
+			
 			var xhttp;
 			xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function () {
 				if (this.readyState == 4 && this.status == 200) {
-					if (this.responseText != null) {
+					if (this.responseText != "null") {
 						console.log("response: ", this.responseText);
 						var obj = JSON.parse(this.responseText);
 						var res = "";
@@ -310,12 +316,16 @@
 
 					}
 					else
-						alert("ERORR -there is problem in thi name..");
+						alert("ERORR -there is problem in this name..");
 				}
+				
+				
 			}
 			var name = document.getElementById("student_my_grad").value;
 			xhttp.open("GET", "/getMyGrades?name=" + name, true);
 			xhttp.send();
+			
+
 		}
 
 		//------------------------------

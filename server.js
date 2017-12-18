@@ -104,7 +104,7 @@ function addStudentToClass(course, student, grade) {
 	let rawdata = fs.readFileSync('Courses.json');
 	let courses = JSON.parse(rawdata);
 	//check if course exist
-	console.log(courses);
+	
 	courses.forEach(function (obj) {
 		if (obj.name == course) {
 			console.log('course exists');//if the course is exist
@@ -118,13 +118,12 @@ function addStudentToClass(course, student, grade) {
 		console.log('course not exists.. need to create...');
 		var data = {"name" : course};
 		courses.push(data);
-		courses = courses.sort(predicateBy("name"));
+		courses = courses.sort(predicateBy("name"));		
 		fs.writeFileSync('Courses.json', JSON.stringify(courses));
 
 		var current_course=[];
 		var data = {"student" : student, "grade" : grade};
 		current_course.push(data);
-		current_course = current_course.sort(predicateBy("name"));
 		fs.writeFileSync(course+'.json', JSON.stringify(current_course));
 	}
 
@@ -141,16 +140,18 @@ function addStudentToClass(course, student, grade) {
 				stu.grade = grade;
 			}
 		});
-
+		
 		//add student and his grade to specipic json course
 		if(!exist_std)
 		{
 			var data = {"student" : student, "grade" : grade};
 			current_course.push(data);
-			current_course = current_course.sort(predicateBy("name"));
+			current_course = current_course.sort(predicateBy("student"));
+			console.log(current_course);
 			fs.writeFileSync(course+'.json', JSON.stringify(current_course));
 		}
-		
+		else
+			fs.writeFileSync(course + '.json', JSON.stringify(current_course));
 	}
 
 
@@ -166,7 +167,9 @@ function addStudentToClass(course, student, grade) {
 		courses.forEach(function (obj) {
 			if (obj.course == course) {
 				console.log('course exists');//if the course is exist
+				console.log("the grade is" + obj.grade);
 				obj.grade = grade;
+				fs.writeFileSync(student + '.json', JSON.stringify(courses));
 				exist_course = 1;
 			}
 		});
@@ -177,7 +180,7 @@ function addStudentToClass(course, student, grade) {
 			console.log('course not exists.. need to add...');
 			var data = { "course": course ,"grade":grade};
 			courses.push(data);
-			courses = courses.sort(predicateBy("name"));
+			courses = courses.sort(predicateBy("course"));
 			fs.writeFileSync(student+'.json', JSON.stringify(courses));
 			
 		}
@@ -186,7 +189,7 @@ function addStudentToClass(course, student, grade) {
 		var current_course = [];
 		var data = { "course": course, "grade": grade };
 		current_course.push(data);
-		current_course = current_course.sort(predicateBy("name"));
+		current_course = current_course.sort(predicateBy("course"));
 		fs.writeFileSync(student + '.json', JSON.stringify(current_course));
 	}
 	return "add...";
@@ -197,8 +200,6 @@ function addStudentToClass(course, student, grade) {
 function getListOfCourses(res){
 	let rawdata = fs.readFileSync('Courses.json');
 	let courses = JSON.parse(rawdata);
-
-	console.log(courses);
 	var list = courses;//courses.sort(predicateBy("name"));
 	return list;
 }
@@ -260,7 +261,8 @@ function deleteClassStudent(course, student) {
 	});
 	if (!flag_course) {
 		messgae = "course not exist";
-	} else {
+	}
+	else {
 		let rawdata = fs.readFileSync(course+'.json');
 		let course_list = JSON.parse(rawdata);
 		if(student == "None" || student == "") {//delete all students
@@ -269,7 +271,9 @@ function deleteClassStudent(course, student) {
 			});
 			console.log("delete all students");
 			messgae = "delete all students";
-		} else {
+			fs.writeFileSync(course + '.json', JSON.stringify(course_list));
+		}
+		else {
 			course_list.forEach(function (obj) {
 				if (obj.student == student) {
 					course_list.pop(obj);
@@ -279,22 +283,24 @@ function deleteClassStudent(course, student) {
 			if (!flag_student) {
 				console.log("student not exist in this courses");
 				messgae = "student not exist in this course";
-			} else {
+			}
+
+			else {
 				console.log("delete the student");//delete course from student.
 				let rawdata = fs.readFileSync(student + '.json');
-				let course_list = JSON.parse(rawdata);
+				let course_list_std = JSON.parse(rawdata);
 				courses.forEach(function (obj) {
 					if ((obj.course == course)) {
-						course_list.pop(obj);
+						course_list_std.pop(obj);
 					}
 
 
 				});
-				fs.writeFileSync(student + '.json', JSON.stringify(course_list));
+				fs.writeFileSync(student + '.json', JSON.stringify(course_list_std));
 				messgae = "delete the student";
 			}
 		}
-		fs.writeFileSync(course+'.json', JSON.stringify(course_list));
+		
 	}
 	return messgae;
 }
